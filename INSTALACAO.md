@@ -1,105 +1,125 @@
-# Guia de Instalação e Implantação do EducaPúblico
+# Guia de Instalação e Atualização do EducaPúblico
 
-Este guia fornece instruções detalhadas para subir o projeto EducaPúblico em seu repositório GitHub e configurar o GitHub Pages para hospedagem.
+Este guia fornece instruções detalhadas para instalar e atualizar o projeto EducaPúblico em seu repositório GitHub.
 
 ## Pré-requisitos
 
-- Conta GitHub (você já possui: https://github.com/Abnernnetto)
-- Git instalado em seu computador local
-- Node.js e npm instalados (para desenvolvimento local)
+- Conta no GitHub (você já possui: https://github.com/Abnernnetto)
+- Git instalado em sua máquina local
+- Node.js (versão 16 ou superior) e npm instalados
 
-## Passo 1: Baixar o Pacote do Projeto
+## Atualização do Repositório Existente
 
-1. Baixe o arquivo ZIP do projeto que foi enviado a você
-2. Descompacte o arquivo em uma pasta local em seu computador
+Se você já possui o repositório EducaPúblico em seu GitHub e deseja atualizá-lo com esta nova versão:
 
-## Passo 2: Inicializar um Repositório Git Local
-
-1. Abra um terminal ou prompt de comando
-2. Navegue até a pasta do projeto descompactado
-3. Execute os seguintes comandos:
-
-```bash
-git init
-git add .
-git commit -m "Versão inicial do EducaPúblico"
-```
-
-## Passo 3: Criar um Novo Repositório no GitHub
-
-1. Acesse sua conta GitHub: https://github.com/Abnernnetto
-2. Clique no botão "New" para criar um novo repositório
-3. Nomeie o repositório como "educapublico" (ou outro nome de sua preferência)
-4. Deixe a opção "Initialize this repository with a README" desmarcada
-5. Clique em "Create repository"
-
-## Passo 4: Conectar e Enviar para o Repositório Remoto
-
-Após criar o repositório, o GitHub mostrará instruções. Execute os comandos para um repositório existente:
-
-```bash
-git remote add origin https://github.com/Abnernnetto/educapublico.git
-git branch -M main
-git push -u origin main
-```
-
-## Passo 5: Configurar o GitHub Pages
-
-1. No GitHub, acesse o repositório que você acabou de criar
-2. Vá para "Settings" (aba de configurações)
-3. Role para baixo até encontrar a seção "GitHub Pages"
-4. Em "Source", selecione "main" como branch e "/docs" como pasta (ou "/(root)" se preferir usar a raiz)
-5. Clique em "Save"
-
-Após alguns minutos, seu site estará disponível em: https://abnernnetto.github.io/educapublico/
-
-## Passo 6: Verificar a Implantação
-
-1. Acesse a URL fornecida pelo GitHub Pages
-2. Verifique se todas as páginas e funcionalidades estão funcionando corretamente
-3. Teste em diferentes dispositivos para garantir a responsividade
-
-## Desenvolvimento Futuro
-
-Para continuar o desenvolvimento do projeto:
-
-1. Clone o repositório em seu ambiente local:
+1. Clone seu repositório existente (se ainda não tiver feito):
    ```bash
    git clone https://github.com/Abnernnetto/educapublico.git
+   cd educapublico
    ```
 
-2. Instale as dependências:
+2. Extraia os arquivos do pacote `educapublico-entrega-final.zip` para uma pasta temporária
+
+3. Copie os arquivos extraídos para seu repositório local:
    ```bash
+   cp -r /caminho/para/pasta/temporaria/* /caminho/para/seu/repositorio/
+   ```
+
+4. Adicione as alterações ao Git:
+   ```bash
+   git add .
+   ```
+
+5. Faça o commit das alterações:
+   ```bash
+   git commit -m "Atualização com novas funcionalidades: ranking de estados, estatísticas nacionais e contadores destacados"
+   ```
+
+6. Envie as alterações para o GitHub:
+   ```bash
+   git push origin main
+   ```
+
+## Criação de Novo Repositório
+
+Se preferir criar um novo repositório para o EducaPúblico:
+
+1. Acesse https://github.com/new
+
+2. Preencha o nome do repositório (ex: "educapublico")
+
+3. Escolha a visibilidade (público ou privado)
+
+4. Clique em "Create repository"
+
+5. Siga as instruções para inicializar o repositório localmente:
+   ```bash
+   git clone https://github.com/Abnernnetto/educapublico.git
    cd educapublico
+   ```
+
+6. Extraia os arquivos do pacote `educapublico-entrega-final.zip` para o diretório do repositório
+
+7. Adicione, faça commit e envie os arquivos:
+   ```bash
+   git add .
+   git commit -m "Versão inicial do EducaPúblico"
+   git push -u origin main
+   ```
+
+## Configuração do GitHub Pages
+
+Para publicar o site usando GitHub Pages:
+
+1. Acesse as configurações do seu repositório no GitHub
+
+2. Navegue até a seção "Pages"
+
+3. Em "Source", selecione a branch principal (main ou master)
+
+4. Em "Folder", selecione "/docs" ou "/dist" (dependendo da estrutura do seu build)
+
+5. Clique em "Save"
+
+6. Aguarde alguns minutos para que o site seja publicado
+
+7. O URL do seu site será exibido na seção Pages (geralmente no formato https://abnernnetto.github.io/educapublico/)
+
+## Execução Local
+
+Para executar o projeto localmente:
+
+1. Instale as dependências:
+   ```bash
    npm install
    ```
 
-3. Execute o servidor de desenvolvimento:
+2. Inicie o servidor de desenvolvimento:
    ```bash
    npm run dev
    ```
 
-4. Após fazer alterações, envie-as para o GitHub:
+3. Acesse http://localhost:5173 (ou a porta indicada no terminal)
+
+## Construção para Produção
+
+Para gerar os arquivos de produção:
+
+1. Execute o comando de build:
    ```bash
-   git add .
-   git commit -m "Descrição das alterações"
-   git push
+   npm run build
    ```
 
-## Suporte a Múltiplos Idiomas
+2. Os arquivos serão gerados na pasta `dist`
 
-O projeto está configurado para suportar três idiomas:
+3. Estes arquivos podem ser hospedados em qualquer servidor web estático
 
-- Português do Brasil (padrão)
-- Inglês
-- Espanhol
+## Solução de Problemas
 
-Para adicionar ou modificar traduções, edite os arquivos na pasta `/src/locales/`.
+Se encontrar erros relacionados a conflitos de merge (como `<<<<<<< HEAD`):
 
-## Contadores de Acesso
+1. Abra o arquivo indicado no erro
+2. Remova os marcadores de conflito (`<<<<<<< HEAD`, `=======`, `>>>>>>> [identificador]`)
+3. Salve o arquivo e tente novamente
 
-Os contadores de acesso estão implementados usando localStorage para usuários únicos e um contador global armazenado em um arquivo JSON. Para visualizar as estatísticas de acesso, acesse a rota `/admin/stats` (protegida por senha).
-
-## Contato e Suporte
-
-Se precisar de ajuda adicional com a implantação ou desenvolvimento, entre em contato através do GitHub ou por e-mail.
+Para outros problemas, consulte a documentação completa ou entre em contato para suporte.

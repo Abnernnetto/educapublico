@@ -1,6 +1,6 @@
-# EducaPúblico
+# Documentação Final - EducaPúblico
 
-## Visão Geral
+## Visão Geral do Projeto
 
 O EducaPúblico é uma plataforma web interativa desenvolvida para aumentar a educação política da população brasileira, fornecendo visualizações claras e acessíveis sobre como os recursos públicos são distribuídos entre os setores de Educação, Saúde e Segurança nos níveis federal e estadual.
 
@@ -34,7 +34,25 @@ O EducaPúblico é uma plataforma web interativa desenvolvida para aumentar a ed
 - Lista de estados em ordem alfabética
 - Dados para todos os estados brasileiros
 
-## Instalação e Execução
+## Arquitetura Técnica
+
+### Frontend
+- Desenvolvido com React e TypeScript
+- Visualizações de dados com Chart.js
+- Estilização com CSS moderno e responsivo
+- Suporte a múltiplos idiomas
+
+### Backend
+- Sistema de extração de dados das APIs oficiais
+- Mecanismo de cache para otimização de desempenho
+- Fallback para dados simulados quando necessário
+
+### Fontes de Dados
+- API do IBGE para dados populacionais
+- API do Portal da Transparência para dados orçamentários federais
+- APIs estaduais para dados orçamentários estaduais (implementação progressiva)
+
+## Guia de Instalação e Execução
 
 ### Requisitos
 - Node.js 16+ e npm/yarn
@@ -49,12 +67,11 @@ O EducaPúblico é uma plataforma web interativa desenvolvida para aumentar a ed
 - Desenvolvimento: `npm run dev` ou `yarn dev`
 - Produção: `npm run build` ou `yarn build`
 
-### Implantação no GitHub Pages
-1. Execute o comando de build: `npm run build`
-2. Configure o GitHub Pages para servir a partir da pasta `dist`
-3. Ou use a ação automática do GitHub Actions (incluída no repositório)
+### Implantação
+- O projeto está configurado para implantação no GitHub Pages
+- Após o build, o conteúdo da pasta `dist` pode ser publicado
 
-## Estrutura do Projeto
+## Estrutura de Arquivos
 
 ```
 educapublico/
@@ -64,14 +81,43 @@ educapublico/
 │   ├── data/             # Dados estáticos e simulados
 │   ├── services/         # Serviços de API e processamento de dados
 │   ├── utils/            # Funções utilitárias
-│   ├── App_final.jsx     # Componente principal
+│   ├── App.tsx           # Componente principal
 │   ├── visualizacoes.jsx # Componentes de visualização
-│   └── extracao_dados.py # Script para extração de dados
+│   └── index.tsx         # Ponto de entrada
+├── public/               # Arquivos públicos
 ├── docs/                 # Documentação
 │   ├── wireframes/       # Wireframes e protótipos
 │   └── api_integracao.md # Documentação de integração com APIs
-└── DOCUMENTACAO_FINAL.md # Documentação detalhada do projeto
+└── package.json          # Dependências e scripts
 ```
+
+## Manutenção e Atualização
+
+### Atualização de Dados
+- Os dados são atualizados automaticamente a partir das APIs oficiais
+- O sistema de cache evita requisições desnecessárias
+- Para forçar uma atualização, limpe a pasta `cache`
+
+### Adição de Novos Estados
+- Todos os estados já estão incluídos no sistema
+- Para adicionar dados reais de novos estados, implemente a integração com a API estadual correspondente
+
+### Expansão de Funcionalidades
+- O código está estruturado de forma modular para facilitar expansões
+- Novos setores podem ser adicionados seguindo o padrão existente
+- Novas visualizações podem ser implementadas no componente de visualizações
+
+## Considerações de Segurança
+
+Para garantir a integridade dos dados apresentados, o EducaPúblico implementa:
+
+1. **Fonte única da verdade**: Conexão direta com APIs oficiais do governo
+2. **Verificação de integridade**: Checksums para garantir que os dados não foram alterados
+3. **Transparência nas fontes**: Links diretos para as fontes originais
+4. **Logs de auditoria**: Registro detalhado de todas as atualizações
+5. **Dados imutáveis**: Impossibilidade de edição manual após importação
+6. **Atualizações automáticas**: Minimização da intervenção humana
+7. **Documentação clara**: Explicação detalhada de toda a metodologia
 
 ## Próximos Passos
 
@@ -84,10 +130,15 @@ educapublico/
 - Expansão das visualizações detalhadas
 - Implementação de comparativos históricos
 
-## Contribuição
+### Fase 3 (Futura)
+- Expansão para nível municipal
+- Adição de mais setores além dos três principais
+- Implementação de recursos de compartilhamento social
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests.
+## Contato e Suporte
 
-## Licença
+Para questões relacionadas ao projeto, entre em contato através do GitHub ou pelo e-mail de suporte.
 
-Este projeto está licenciado sob a licença MIT - veja o arquivo LICENSE para detalhes.
+---
+
+Documentação gerada em: Maio de 2025
