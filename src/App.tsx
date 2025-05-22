@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 // Definição de tipos
@@ -20,11 +21,6 @@ interface DadosDetalhados {
   [key: string]: DadoItem[]; // Índice de string para permitir acesso dinâmico
 }
 
-interface DadosFederaisType {
-  macro: DadoItem[];
-  detalhado: DadosDetalhados;
-}
-
 interface DadosEstadoType {
   macro: DadoItem[];
   detalhado: DadosDetalhados;
@@ -34,8 +30,39 @@ interface DadosEstaduaisType {
   [estado: string]: DadosEstadoType;
 }
 
+// Função para gerar dados simulados para um estado
+const gerarDadosEstado = (multiplicador: number): DadosEstadoType => {
+  return {
+    macro: [
+      { nome: 'Educação', valor: 15.7 * multiplicador, percentual: 37.4, cor: '#1e88e5' },
+      { nome: 'Saúde', valor: 18.5 * multiplicador, percentual: 44.0, cor: '#43a047' },
+      { nome: 'Segurança', valor: 7.8 * multiplicador, percentual: 18.6, cor: '#e53935' },
+    ],
+    detalhado: {
+      'Educação': [
+        { nome: 'Ensino Fundamental', valor: 6.3 * multiplicador, percentual: 40.0, cor: '#1e88e5' },
+        { nome: 'Ensino Médio', valor: 4.7 * multiplicador, percentual: 30.0, cor: '#42a5f5' },
+        { nome: 'Ensino Superior', valor: 3.1 * multiplicador, percentual: 20.0, cor: '#90caf9' },
+        { nome: 'Outros', valor: 1.6 * multiplicador, percentual: 10.0, cor: '#bbdefb' },
+      ],
+      'Saúde': [
+        { nome: 'Atenção Básica', valor: 5.6 * multiplicador, percentual: 30.0, cor: '#43a047' },
+        { nome: 'Média e Alta Complexidade', valor: 7.4 * multiplicador, percentual: 40.0, cor: '#66bb6a' },
+        { nome: 'Assistência Farmacêutica', valor: 2.8 * multiplicador, percentual: 15.0, cor: '#a5d6a7' },
+        { nome: 'Vigilância em Saúde', valor: 2.8 * multiplicador, percentual: 15.0, cor: '#c8e6c9' },
+      ],
+      'Segurança': [
+        { nome: 'Policiamento', valor: 3.9 * multiplicador, percentual: 50.0, cor: '#e53935' },
+        { nome: 'Sistema Prisional', valor: 2.3 * multiplicador, percentual: 30.0, cor: '#ef5350' },
+        { nome: 'Prevenção', valor: 0.8 * multiplicador, percentual: 10.0, cor: '#e57373' },
+        { nome: 'Outros', valor: 0.8 * multiplicador, percentual: 10.0, cor: '#ffcdd2' },
+      ]
+    }
+  };
+};
+
 // Dados simulados para demonstração
-const dadosFederais: DadosFederaisType = {
+const dadosFederais = {
   macro: [
     { nome: 'Educação', valor: 152.7, percentual: 41.4, cor: '#1e88e5' },
     { nome: 'Saúde', valor: 159.9, percentual: 43.3, cor: '#43a047' },
@@ -62,6 +89,37 @@ const dadosFederais: DadosFederaisType = {
     ]
   }
 };
+
+// Lista de estados brasileiros em ordem alfabética
+const estados = [
+  'Acre',
+  'Alagoas',
+  'Amapá',
+  'Amazonas',
+  'Bahia',
+  'Ceará',
+  'Distrito Federal',
+  'Espírito Santo',
+  'Goiás',
+  'Maranhão',
+  'Mato Grosso',
+  'Mato Grosso do Sul',
+  'Minas Gerais',
+  'Pará',
+  'Paraíba',
+  'Paraná',
+  'Pernambuco',
+  'Piauí',
+  'Rio de Janeiro',
+  'Rio Grande do Norte',
+  'Rio Grande do Sul',
+  'Rondônia',
+  'Roraima',
+  'Santa Catarina',
+  'São Paulo',
+  'Sergipe',
+  'Tocantins'
+];
 
 // Dados simulados para estados
 const dadosEstaduais: DadosEstaduaisType = {
@@ -148,39 +206,183 @@ const dadosEstaduais: DadosEstaduaisType = {
   }
 };
 
-// Lista de estados brasileiros
-const estados = [
-  'São Paulo',
-  'Rio de Janeiro',
-  'Minas Gerais',
-  'Bahia',
-  'Paraná',
-  'Rio Grande do Sul',
-  'Pernambuco',
-  'Ceará',
-  'Pará',
-  'Santa Catarina',
-  'Goiás',
-  'Maranhão',
-  'Amazonas',
-  'Espírito Santo',
-  'Paraíba',
-  'Mato Grosso',
-  'Rio Grande do Norte',
-  'Alagoas',
-  'Piauí',
-  'Distrito Federal',
-  'Mato Grosso do Sul',
-  'Sergipe',
-  'Rondônia',
-  'Tocantins',
-  'Acre',
-  'Amapá',
-  'Roraima'
-];
+// Gerar dados para os estados restantes
+estados.forEach((estado) => {
+  if (!dadosEstaduais[estado]) {
+    // Usar um multiplicador baseado na primeira letra do estado para variar os dados
+    const multiplicador = (estado.charCodeAt(0) - 65) / 10 + 0.5;
+    dadosEstaduais[estado] = gerarDadosEstado(multiplicador);
+  }
+});
 
 // Tipo para os setores disponíveis
 type SetorType = 'Educação' | 'Saúde' | 'Segurança';
+
+// Tipo para os idiomas disponíveis
+type IdiomaType = 'pt-BR' | 'en-US' | 'es';
+
+// Traduções
+const traducoes = {
+  'pt-BR': {
+    titulo: 'EducaPúblico',
+    inicio: 'Início',
+    sobre: 'Sobre',
+    transparencia: 'Transparência Orçamentária',
+    descricao: 'Explore os dados de investimentos em Educação, Saúde e Segurança nos níveis federal e estadual.',
+    nivel: 'Nível',
+    federal: 'Federal',
+    estadual: 'Estadual',
+    estado: 'Estado',
+    selecione_estado: 'Selecione um estado',
+    visualizacao: 'Visualização',
+    macro: 'Macro',
+    detalhada: 'Detalhada',
+    setor: 'Setor',
+    selecione_setor: 'Selecione um setor',
+    educacao: 'Educação',
+    saude: 'Saúde',
+    seguranca: 'Segurança',
+    comparativo: 'Comparativo de Investimentos',
+    distribuicao: 'Distribuição do Orçamento em',
+    valor: 'Valor (em bilhões de R$)',
+    categoria: 'Categoria',
+    valor_bilhoes: 'Valor (R$ bilhões)',
+    percentual: 'Percentual',
+    fonte: 'Fonte: Portal da Transparência',
+    acessos: 'Acessos',
+    usuarios_unicos: 'Usuários únicos',
+    como_interpretar: 'Como interpretar estes dados',
+    dados_apresentados: 'Os dados apresentados mostram a distribuição orçamentária entre os setores de Educação, Saúde e Segurança. É importante entender que:',
+    valores_bilhoes: 'Os valores são apresentados em bilhões de reais',
+    percentuais_proporcao: 'Os percentuais representam a proporção em relação ao total dos três setores analisados',
+    percentuais_relativos: 'Na visualização detalhada, os percentuais são relativos ao total do setor selecionado',
+    comparar_dados: 'Ao comparar dados entre diferentes níveis (federal e estadual) ou entre estados, considere as diferenças de escala orçamentária e as particularidades regionais.',
+    acessibilidade: 'Acessibilidade',
+    recursos_disponiveis: 'O EducaPúblico foi desenvolvido com foco em acessibilidade. Recursos disponíveis:',
+    navegacao_teclado: 'Navegação por teclado (use Tab para navegar entre elementos)',
+    cores_contraste: 'Cores com contraste adequado para pessoas com daltonismo',
+    textos_alternativos: 'Textos alternativos para gráficos e visualizações',
+    tabelas_dados: 'Tabelas de dados como alternativa às visualizações gráficas',
+    plataforma: 'Plataforma para educação política e transparência orçamentária, facilitando o acesso a informações sobre investimentos públicos.',
+    links_uteis: 'Links Úteis',
+    portal_transparencia: 'Portal da Transparência',
+    dados_abertos: 'Dados Abertos do Governo',
+    lei_acesso: 'Lei de Acesso à Informação',
+    direitos_reservados: 'Todos os direitos reservados.',
+    sobre_titulo: 'Sobre o EducaPúblico',
+    sobre_descricao: 'O EducaPúblico é uma plataforma dedicada a aumentar a educação política da população brasileira, facilitando o acesso e a compreensão de dados orçamentários governamentais.',
+    sobre_objetivo: 'Nosso objetivo é proporcionar uma visão clara e acessível sobre como os recursos públicos são distribuídos entre os setores de Educação, Saúde e Segurança, tanto no nível federal quanto estadual.',
+    sobre_transparencia: 'Acreditamos que a transparência é fundamental para o exercício da cidadania. Ao compreender melhor como os recursos são alocados, os cidadãos podem participar mais ativamente do processo democrático e cobrar ações mais efetivas de seus representantes.',
+    sobre_dados: 'Os dados apresentados nesta plataforma são obtidos de fontes oficiais, como o Portal da Transparência do Governo Federal e portais estaduais. Nosso compromisso é fornecer informações precisas e atualizadas, apresentadas de forma clara e compreensível para todos.',
+    sobre_futuro: 'No futuro, pretendemos expandir a plataforma para incluir dados municipais e mais setores, além de implementar ferramentas de análise comparativa e histórica para um entendimento ainda mais profundo das políticas públicas brasileiras.'
+  },
+  'en-US': {
+    titulo: 'PublicEdu',
+    inicio: 'Home',
+    sobre: 'About',
+    transparencia: 'Budget Transparency',
+    descricao: 'Explore investment data in Education, Health, and Security at federal and state levels.',
+    nivel: 'Level',
+    federal: 'Federal',
+    estadual: 'State',
+    estado: 'State',
+    selecione_estado: 'Select a state',
+    visualizacao: 'View',
+    macro: 'Macro',
+    detalhada: 'Detailed',
+    setor: 'Sector',
+    selecione_setor: 'Select a sector',
+    educacao: 'Education',
+    saude: 'Health',
+    seguranca: 'Security',
+    comparativo: 'Investment Comparison',
+    distribuicao: 'Budget Distribution in',
+    valor: 'Value (in billions of R$)',
+    categoria: 'Category',
+    valor_bilhoes: 'Value (R$ billions)',
+    percentual: 'Percentage',
+    fonte: 'Source: Transparency Portal',
+    acessos: 'Visits',
+    usuarios_unicos: 'Unique users',
+    como_interpretar: 'How to interpret this data',
+    dados_apresentados: 'The presented data shows the budget distribution among Education, Health, and Security sectors. It is important to understand that:',
+    valores_bilhoes: 'Values are presented in billions of reais',
+    percentuais_proporcao: 'Percentages represent the proportion relative to the total of the three analyzed sectors',
+    percentuais_relativos: 'In the detailed view, percentages are relative to the total of the selected sector',
+    comparar_dados: 'When comparing data between different levels (federal and state) or between states, consider the differences in budget scale and regional particularities.',
+    acessibilidade: 'Accessibility',
+    recursos_disponiveis: 'PublicEdu was developed with a focus on accessibility. Available features:',
+    navegacao_teclado: 'Keyboard navigation (use Tab to navigate between elements)',
+    cores_contraste: 'Colors with adequate contrast for people with color blindness',
+    textos_alternativos: 'Alternative texts for graphics and visualizations',
+    tabelas_dados: 'Data tables as an alternative to graphical visualizations',
+    plataforma: 'Platform for political education and budget transparency, facilitating access to information about public investments.',
+    links_uteis: 'Useful Links',
+    portal_transparencia: 'Transparency Portal',
+    dados_abertos: 'Government Open Data',
+    lei_acesso: 'Information Access Law',
+    direitos_reservados: 'All rights reserved.',
+    sobre_titulo: 'About PublicEdu',
+    sobre_descricao: 'PublicEdu is a platform dedicated to increasing the political education of the Brazilian population, facilitating access to and understanding of government budget data.',
+    sobre_objetivo: 'Our goal is to provide a clear and accessible view of how public resources are distributed among the Education, Health, and Security sectors, both at the federal and state levels.',
+    sobre_transparencia: 'We believe that transparency is fundamental to the exercise of citizenship. By better understanding how resources are allocated, citizens can participate more actively in the democratic process and demand more effective actions from their representatives.',
+    sobre_dados: 'The data presented on this platform is obtained from official sources, such as the Federal Government Transparency Portal and state portals. Our commitment is to provide accurate and up-to-date information, presented in a clear and understandable way for everyone.',
+    sobre_futuro: 'In the future, we intend to expand the platform to include municipal data and more sectors, as well as implement comparative and historical analysis tools for an even deeper understanding of Brazilian public policies.'
+  },
+  'es': {
+    titulo: 'EducaPúblico',
+    inicio: 'Inicio',
+    sobre: 'Acerca de',
+    transparencia: 'Transparencia Presupuestaria',
+    descricao: 'Explore los datos de inversiones en Educación, Salud y Seguridad en los niveles federal y estatal.',
+    nivel: 'Nivel',
+    federal: 'Federal',
+    estadual: 'Estatal',
+    estado: 'Estado',
+    selecione_estado: 'Seleccione un estado',
+    visualizacao: 'Visualización',
+    macro: 'Macro',
+    detalhada: 'Detallada',
+    setor: 'Sector',
+    selecione_setor: 'Seleccione un sector',
+    educacao: 'Educación',
+    saude: 'Salud',
+    seguranca: 'Seguridad',
+    comparativo: 'Comparativo de Inversiones',
+    distribuicao: 'Distribución del Presupuesto en',
+    valor: 'Valor (en miles de millones de R$)',
+    categoria: 'Categoría',
+    valor_bilhoes: 'Valor (R$ miles de millones)',
+    percentual: 'Porcentaje',
+    fonte: 'Fuente: Portal de Transparencia',
+    acessos: 'Accesos',
+    usuarios_unicos: 'Usuarios únicos',
+    como_interpretar: 'Cómo interpretar estos datos',
+    dados_apresentados: 'Los datos presentados muestran la distribución presupuestaria entre los sectores de Educación, Salud y Seguridad. Es importante entender que:',
+    valores_bilhoes: 'Los valores se presentan en miles de millones de reales',
+    percentuais_proporcao: 'Los porcentajes representan la proporción en relación al total de los tres sectores analizados',
+    percentuais_relativos: 'En la visualización detallada, los porcentajes son relativos al total del sector seleccionado',
+    comparar_dados: 'Al comparar datos entre diferentes niveles (federal y estatal) o entre estados, considere las diferencias de escala presupuestaria y las particularidades regionales.',
+    acessibilidade: 'Accesibilidad',
+    recursos_disponiveis: 'EducaPúblico fue desarrollado con enfoque en accesibilidad. Recursos disponibles:',
+    navegacao_teclado: 'Navegación por teclado (use Tab para navegar entre elementos)',
+    cores_contraste: 'Colores con contraste adecuado para personas con daltonismo',
+    textos_alternativos: 'Textos alternativos para gráficos y visualizaciones',
+    tabelas_dados: 'Tablas de datos como alternativa a las visualizaciones gráficas',
+    plataforma: 'Plataforma para educación política y transparencia presupuestaria, facilitando el acceso a informaciones sobre inversiones públicas.',
+    links_uteis: 'Enlaces Útiles',
+    portal_transparencia: 'Portal de Transparencia',
+    dados_abertos: 'Datos Abiertos del Gobierno',
+    lei_acesso: 'Ley de Acceso a la Información',
+    direitos_reservados: 'Todos los derechos reservados.',
+    sobre_titulo: 'Acerca de EducaPúblico',
+    sobre_descricao: 'EducaPúblico es una plataforma dedicada a aumentar la educación política de la población brasileña, facilitando el acceso y la comprensión de datos presupuestarios gubernamentales.',
+    sobre_objetivo: 'Nuestro objetivo es proporcionar una visión clara y accesible sobre cómo se distribuyen los recursos públicos entre los sectores de Educación, Salud y Seguridad, tanto a nivel federal como estatal.',
+    sobre_transparencia: 'Creemos que la transparencia es fundamental para el ejercicio de la ciudadanía. Al comprender mejor cómo se asignan los recursos, los ciudadanos pueden participar más activamente en el proceso democrático y exigir acciones más efectivas de sus representantes.',
+    sobre_dados: 'Los datos presentados en esta plataforma se obtienen de fuentes oficiales, como el Portal de Transparencia del Gobierno Federal y portales estatales. Nuestro compromiso es proporcionar información precisa y actualizada, presentada de forma clara y comprensible para todos.',
+    sobre_futuro: 'En el futuro, pretendemos expandir la plataforma para incluir datos municipales y más sectores, además de implementar herramientas de análisis comparativo e histórico para una comprensión aún más profunda de las políticas públicas brasileñas.'
+  }
+};
 
 // Componente principal
 export default function App() {
@@ -189,6 +391,8 @@ export default function App() {
   const [estado, setEstado] = useState<string>('São Paulo');
   const [visualizacao, setVisualizacao] = useState<'macro' | 'detalhada'>('macro');
   const [setor, setSetor] = useState<SetorType>('Educação');
+  const [idioma, setIdioma] = useState<IdiomaType>('pt-BR');
+  const [sobreAberto, setSobreAberto] = useState(false);
   
   // Contadores de acesso
   const [acessosTotal, setAcessosTotal] = useState<number>(0);
@@ -234,6 +438,52 @@ export default function App() {
   // Dados filtrados com base nas seleções
   const dados = obterDados();
   
+  // Obter traduções para o idioma atual
+  const t = traducoes[idioma];
+  
+  // Função para renderizar a bandeira do idioma
+  const renderizarBandeira = (idiomaCode: IdiomaType) => {
+    switch (idiomaCode) {
+      case 'pt-BR':
+        return (
+          <div className="w-5 h-3 mr-2 rounded-sm overflow-hidden flex-shrink-0">
+            <div className="bg-green-600 w-full h-full relative">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="bg-yellow-400 w-3/5 h-3/5 transform rotate-45 flex items-center justify-center">
+                  <div className="bg-blue-800 w-2/3 h-2/3 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case 'en-US':
+        return (
+          <div className="w-5 h-3 mr-2 rounded-sm overflow-hidden flex-shrink-0">
+            <div className="bg-blue-900 w-full h-full relative">
+              <div className="absolute inset-0">
+                <div className="absolute left-0 top-0 w-1/4 h-1/2 bg-white"></div>
+                <div className="absolute left-1/4 top-0 right-0 h-1/6 bg-red-600"></div>
+                <div className="absolute left-1/4 top-1/6 right-0 h-1/6 bg-white"></div>
+                <div className="absolute left-1/4 top-2/6 right-0 h-1/6 bg-red-600"></div>
+              </div>
+            </div>
+          </div>
+        );
+      case 'es':
+        return (
+          <div className="w-5 h-3 mr-2 rounded-sm overflow-hidden flex-shrink-0">
+            <div className="flex flex-col h-full">
+              <div className="bg-red-600 h-1/4 w-full"></div>
+              <div className="bg-yellow-500 h-2/4 w-full"></div>
+              <div className="bg-red-600 h-1/4 w-full"></div>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Cabeçalho */}
@@ -244,20 +494,39 @@ export default function App() {
               <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
               <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
             </svg>
-            <h1 className="text-xl font-bold">EducaPúblico</h1>
+            <h1 className="text-xl font-bold">{t.titulo}</h1>
           </div>
           <div className="flex gap-4">
-            <Button variant="ghost" className="text-white hover:text-blue-100">Início</Button>
-            <Button variant="ghost" className="text-white hover:text-blue-100">Sobre</Button>
-            <Button variant="ghost" className="text-white hover:text-blue-100">Contato</Button>
-            <Select defaultValue="pt-BR">
-              <SelectTrigger className="w-[100px] bg-blue-700 border-blue-500 text-white">
-                <SelectValue placeholder="Idioma" />
+            <Button variant="ghost" className="text-white hover:text-blue-100">{t.inicio}</Button>
+            <Button variant="ghost" className="text-white hover:text-blue-100" onClick={() => setSobreAberto(true)}>{t.sobre}</Button>
+            <Select value={idioma} onValueChange={(value) => setIdioma(value as IdiomaType)}>
+              <SelectTrigger className="w-[140px] bg-blue-700 border-blue-500 text-white">
+                <SelectValue>
+                  <div className="flex items-center">
+                    {renderizarBandeira(idioma)}
+                    {idioma === 'pt-BR' ? 'Português' : idioma === 'en-US' ? 'English' : 'Español'}
+                  </div>
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pt-BR">Português</SelectItem>
-                <SelectItem value="en-US">English</SelectItem>
-                <SelectItem value="es">Español</SelectItem>
+                <SelectItem value="pt-BR">
+                  <div className="flex items-center">
+                    {renderizarBandeira('pt-BR')}
+                    Português
+                  </div>
+                </SelectItem>
+                <SelectItem value="en-US">
+                  <div className="flex items-center">
+                    {renderizarBandeira('en-US')}
+                    English
+                  </div>
+                </SelectItem>
+                <SelectItem value="es">
+                  <div className="flex items-center">
+                    {renderizarBandeira('es')}
+                    Español
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -268,30 +537,30 @@ export default function App() {
       <main className="container mx-auto p-4 mt-8">
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Transparência Orçamentária</CardTitle>
+            <CardTitle>{t.transparencia}</CardTitle>
             <CardDescription>
-              Explore os dados de investimentos em Educação, Saúde e Segurança nos níveis federal e estadual.
+              {t.descricao}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               {/* Filtro de Nível */}
               <div>
-                <label className="block text-sm font-medium mb-2">Nível</label>
+                <label className="block text-sm font-medium mb-2">{t.nivel}</label>
                 <Tabs defaultValue="federal" value={nivel} onValueChange={(value) => setNivel(value as 'federal' | 'estadual')} className="w-full">
                   <TabsList className="w-full">
-                    <TabsTrigger value="federal" className="w-1/2">Federal</TabsTrigger>
-                    <TabsTrigger value="estadual" className="w-1/2">Estadual</TabsTrigger>
+                    <TabsTrigger value="federal" className="w-1/2">{t.federal}</TabsTrigger>
+                    <TabsTrigger value="estadual" className="w-1/2">{t.estadual}</TabsTrigger>
                   </TabsList>
                 </Tabs>
               </div>
               
               {/* Filtro de Estado (visível apenas quando nível estadual está selecionado) */}
               <div className={nivel === 'estadual' ? 'block' : 'hidden'}>
-                <label className="block text-sm font-medium mb-2">Estado</label>
+                <label className="block text-sm font-medium mb-2">{t.estado}</label>
                 <Select value={estado} onValueChange={setEstado}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione um estado" />
+                    <SelectValue placeholder={t.selecione_estado} />
                   </SelectTrigger>
                   <SelectContent>
                     {estados.map((est) => (
@@ -303,26 +572,26 @@ export default function App() {
               
               {/* Filtro de Visualização */}
               <div>
-                <label className="block text-sm font-medium mb-2">Visualização</label>
+                <label className="block text-sm font-medium mb-2">{t.visualizacao}</label>
                 <Tabs defaultValue="macro" value={visualizacao} onValueChange={(value) => setVisualizacao(value as 'macro' | 'detalhada')} className="w-full">
                   <TabsList className="w-full">
-                    <TabsTrigger value="macro" className="w-1/2">Macro</TabsTrigger>
-                    <TabsTrigger value="detalhada" className="w-1/2">Detalhada</TabsTrigger>
+                    <TabsTrigger value="macro" className="w-1/2">{t.macro}</TabsTrigger>
+                    <TabsTrigger value="detalhada" className="w-1/2">{t.detalhada}</TabsTrigger>
                   </TabsList>
                 </Tabs>
               </div>
               
               {/* Filtro de Setor (visível apenas quando visualização detalhada está selecionada) */}
               <div className={visualizacao === 'detalhada' ? 'block' : 'hidden'}>
-                <label className="block text-sm font-medium mb-2">Setor</label>
+                <label className="block text-sm font-medium mb-2">{t.setor}</label>
                 <Select value={setor} onValueChange={(value) => setSetor(value as SetorType)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione um setor" />
+                    <SelectValue placeholder={t.selecione_setor} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Educação">Educação</SelectItem>
-                    <SelectItem value="Saúde">Saúde</SelectItem>
-                    <SelectItem value="Segurança">Segurança</SelectItem>
+                    <SelectItem value="Educação">{t.educacao}</SelectItem>
+                    <SelectItem value="Saúde">{t.saude}</SelectItem>
+                    <SelectItem value="Segurança">{t.seguranca}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -332,8 +601,8 @@ export default function App() {
             <div className="mt-8">
               <h2 className="text-xl font-bold mb-4">
                 {visualizacao === 'macro' 
-                  ? `Comparativo de Investimentos - ${nivel === 'federal' ? 'Federal' : estado}`
-                  : `Distribuição do Orçamento em ${setor} - ${nivel === 'federal' ? 'Federal' : estado}`
+                  ? `${t.comparativo} - ${nivel === 'federal' ? t.federal : estado}`
+                  : `${t.distribuicao} ${setor} - ${nivel === 'federal' ? t.federal : estado}`
                 }
               </h2>
               
@@ -350,7 +619,7 @@ export default function App() {
                       <YAxis tickFormatter={(value) => `R$ ${value}B`} />
                       <Tooltip formatter={(value) => [`R$ ${value} bilhões`, 'Valor']} />
                       <Legend />
-                      <Bar dataKey="valor" name="Valor (em bilhões de R$)">
+                      <Bar dataKey="valor" name={t.valor}>
                         {dados.map((entry: DadoItem, index: number) => (
                           <Cell key={`cell-${index}`} fill={entry.cor} />
                         ))}
@@ -389,9 +658,9 @@ export default function App() {
                 <table className="min-w-full bg-white border border-gray-200">
                   <thead>
                     <tr>
-                      <th className="py-2 px-4 border-b text-left">Categoria</th>
-                      <th className="py-2 px-4 border-b text-right">Valor (R$ bilhões)</th>
-                      <th className="py-2 px-4 border-b text-right">Percentual</th>
+                      <th className="py-2 px-4 border-b text-left">{t.categoria}</th>
+                      <th className="py-2 px-4 border-b text-right">{t.valor_bilhoes}</th>
+                      <th className="py-2 px-4 border-b text-right">{t.percentual}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -414,10 +683,10 @@ export default function App() {
           </CardContent>
           <CardFooter className="flex justify-between text-sm text-gray-500">
             <div>
-              Fonte: Portal da Transparência, {new Date().getFullYear()}
+              {t.fonte}, {new Date().getFullYear()}
             </div>
             <div>
-              Acessos: {acessosTotal} | Usuários únicos: {acessosUnicos}
+              {t.acessos}: {acessosTotal} | {t.usuarios_unicos}: {acessosUnicos}
             </div>
           </CardFooter>
         </Card>
@@ -425,22 +694,20 @@ export default function App() {
         {/* Seção de explicação */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Como interpretar estes dados</CardTitle>
+            <CardTitle>{t.como_interpretar}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="prose max-w-none">
               <p>
-                Os dados apresentados mostram a distribuição orçamentária entre os setores de Educação, Saúde e Segurança. 
-                É importante entender que:
+                {t.dados_apresentados}
               </p>
               <ul>
-                <li>Os valores são apresentados em bilhões de reais</li>
-                <li>Os percentuais representam a proporção em relação ao total dos três setores analisados</li>
-                <li>Na visualização detalhada, os percentuais são relativos ao total do setor selecionado</li>
+                <li>{t.valores_bilhoes}</li>
+                <li>{t.percentuais_proporcao}</li>
+                <li>{t.percentuais_relativos}</li>
               </ul>
               <p>
-                Ao comparar dados entre diferentes níveis (federal e estadual) ou entre estados, considere as diferenças 
-                de escala orçamentária e as particularidades regionais.
+                {t.comparar_dados}
               </p>
             </div>
           </CardContent>
@@ -449,23 +716,19 @@ export default function App() {
         {/* Seção de acessibilidade */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Acessibilidade</CardTitle>
+            <CardTitle>{t.acessibilidade}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="prose max-w-none">
               <p>
-                O EducaPúblico foi desenvolvido com foco em acessibilidade. Recursos disponíveis:
+                {t.recursos_disponiveis}
               </p>
               <ul>
-                <li>Navegação por teclado (use Tab para navegar entre elementos)</li>
-                <li>Cores com contraste adequado para pessoas com daltonismo</li>
-                <li>Textos alternativos para gráficos e visualizações</li>
-                <li>Tabelas de dados como alternativa às visualizações gráficas</li>
+                <li>{t.navegacao_teclado}</li>
+                <li>{t.cores_contraste}</li>
+                <li>{t.textos_alternativos}</li>
+                <li>{t.tabelas_dados}</li>
               </ul>
-              <p>
-                Se encontrar problemas de acessibilidade ou tiver sugestões para melhorias, 
-                entre em contato através da seção "Contato".
-              </p>
             </div>
           </CardContent>
         </Card>
@@ -474,35 +737,45 @@ export default function App() {
       {/* Rodapé */}
       <footer className="bg-gray-800 text-white p-8 mt-8">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-lg font-bold mb-4">EducaPúblico</h3>
+              <h3 className="text-lg font-bold mb-4">{t.titulo}</h3>
               <p className="text-gray-300">
-                Plataforma para educação política e transparência orçamentária, 
-                facilitando o acesso a informações sobre investimentos públicos.
+                {t.plataforma}
               </p>
             </div>
             <div>
-              <h3 className="text-lg font-bold mb-4">Links Úteis</h3>
+              <h3 className="text-lg font-bold mb-4">{t.links_uteis}</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-blue-300 hover:underline">Portal da Transparência</a></li>
-                <li><a href="#" className="text-blue-300 hover:underline">Dados Abertos do Governo</a></li>
-                <li><a href="#" className="text-blue-300 hover:underline">Lei de Acesso à Informação</a></li>
+                <li><a href="https://portaldatransparencia.gov.br/" target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">{t.portal_transparencia}</a></li>
+                <li><a href="https://dados.gov.br/" target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">{t.dados_abertos}</a></li>
+                <li><a href="https://www.gov.br/acessoainformacao/pt-br" target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">{t.lei_acesso}</a></li>
               </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-bold mb-4">Contato</h3>
-              <p className="text-gray-300">
-                Para dúvidas, sugestões ou reportar problemas, entre em contato:
-              </p>
-              <p className="text-blue-300">contato@educapublico.org.br</p>
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-4 text-center text-gray-400">
-            <p>&copy; {new Date().getFullYear()} EducaPúblico. Todos os direitos reservados.</p>
+            <p>&copy; {new Date().getFullYear()} {t.titulo}. {t.direitos_reservados}</p>
           </div>
         </div>
       </footer>
+      
+      {/* Modal Sobre */}
+      <Dialog open={sobreAberto} onOpenChange={setSobreAberto}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{t.sobre_titulo}</DialogTitle>
+            <DialogDescription className="text-base mt-4">
+              <div className="prose max-w-none">
+                <p className="text-lg">{t.sobre_descricao}</p>
+                <p>{t.sobre_objetivo}</p>
+                <p>{t.sobre_transparencia}</p>
+                <p>{t.sobre_dados}</p>
+                <p>{t.sobre_futuro}</p>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
