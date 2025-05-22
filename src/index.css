@@ -1,0 +1,331 @@
+:root {
+  font-family: 'Roboto', 'Segoe UI', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 2.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.app {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.logo h1 {
+  margin: 0;
+  color: #4a90e2;
+}
+
+.logo p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #888;
+}
+
+.idiomas {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.idiomas button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+}
+
+.idiomas button img {
+  width: 20px;
+  height: auto;
+}
+
+.idiomas button.ativo {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.menu {
+  display: flex;
+  gap: 1rem;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  background-color: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.grupo-filtro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.grupo-filtro label {
+  font-weight: bold;
+  color: #333;
+}
+
+.botoes-opcao {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.botoes-opcao button {
+  padding: 0.4rem 0.8rem;
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.botoes-opcao button.ativo {
+  background-color: #4a90e2;
+  color: white;
+}
+
+select {
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+  min-width: 150px;
+}
+
+.visualizacoes {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-height: 500px;
+}
+
+.carregando {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+.modal-sobre {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-conteudo {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-conteudo h2 {
+  color: #4a90e2;
+  margin-bottom: 1rem;
+}
+
+.modal-conteudo h3 {
+  color: #333;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.modal-conteudo p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.fechar {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.botao-fechar {
+  margin-top: 1.5rem;
+  background-color: #4a90e2;
+  color: white;
+}
+
+.estatisticas-nacionais h2 {
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.estatisticas-nacionais .subtitulo {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background-color: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex: 1;
+  min-width: 250px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  color: #4a90e2;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.card .valor {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.card .percentual {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.contadores-container {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.contadores-acesso {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.contador {
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.contador .valor {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #4a90e2;
+  margin-bottom: 0.2rem;
+}
+
+.contador .rotulo {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+@media (max-width: 768px) {
+  .cabecalho {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .filtros {
+    flex-direction: column;
+  }
+  
+  .cards-container {
+    flex-direction: column;
+  }
+  
+  .contadores-acesso {
+    flex-direction: column;
+  }
+}
